@@ -1,6 +1,3 @@
-Project hosted on GitHub [here](https://github.com/jyim1203/power-outages-analysis/tree/main)!
-
-
 # Power Outages Analysis
 UCSD DSC80 Project
 by Jonathan Yim (jgyim@ucsd.edu)
@@ -9,11 +6,11 @@ by Jonathan Yim (jgyim@ucsd.edu)
 
 ## Introduction
 
-In this project, I analyzed a dataset of major U.S. power outages from January 2000 to July 2016, sourced from Purdue University’s Laboratory for Advancing Sustainable Critical Infrastructure at https://engineering.purdue.edu/LASCI/research-data/outages. Each outage meets the Department of Energy’s criteria of impacting at least 50,000 customers or causing an unplanned energy demand loss of at least 300 MegaWatts.
+In this project, I analyzed a dataset of major U.S. power outages from January 2000 to July 2016, sourced from Purdue University’s Laboratory for Advancing Sustainable Critical Infrastructure at <a href="https://engineering.purdue.edu/LASCI/research-data/outages">this link</a>. Each outage meets the Department of Energy’s criteria of impacting at least 50,000 customers or causing an unplanned energy demand loss of at least 300 MegaWatts.
 
 My analysis will proceed in four main stages:
 
-1. Data Cleaning and Exploratory Analysis to understand the dataset`s structure and distributions.
+1. Data Cleaning and Exploratory Analysis to understand the dataset's structure and distributions.
 
 2. Missingness Analysis to examine the mechanisms and dependencies of missing data.
 
@@ -21,7 +18,7 @@ My analysis will proceed in four main stages:
 
 4. Predictive Modeling to forecast the duration (length) of an outage.
 
-First, I will clean the data and visualize key features to uncover initial patterns. My core research question is: How long can we expect a major power outage to last based on information typically available to an impacted individual or utility? I will build a model to predict outage duration using accessible features such as the time of occurrence (month, year, hour), location (state, climate region), and more, while withholding the exact cause of the outage. Accurately predicting outage length is crucial for utilities to optimize response efforts and resource allocation, and for communities and emergency services to improve preparedness and mitigate economic and public safety impacts. From the impacted consumer`s point of view, it may also help individuals make informed decisions, from how to prepare for longer outages, staying safe without power, reducing anxiety and worries, and more.
+First, I will clean the data and visualize key features to uncover initial patterns. My core research question is: How long can we expect a major power outage to last based on information typically available to an impacted individual or utility? I will build a model to predict outage duration using accessible features such as the time of occurrence (month, year, hour), location (state, climate region), and more, while withholding the exact cause of the outage. Accurately predicting outage length is crucial for utilities to optimize response efforts and resource allocation, and for communities and emergency services to improve preparedness and mitigate economic and public safety impacts. From the impacted consumer's point of view, it may also help individuals make informed decisions, from how to prepare for longer outages, staying safe without power, reducing anxiety and worries, and more.
 
 The dataset contains 1,534 outages (rows) described by 57 features (columns), including information on outage characteristics, geography, climate, and state-level economic statistics. For this analysis, I will focus on a curated subset of these features.
 
@@ -90,8 +87,9 @@ Our first step is to clean the data and make it more suitable for analysis.
     `population`
 2. Then, I make sure the columns are of the right data types and drop duplicate observations (10 observations dropped).
 3. Next, I combined the `outage_start_date` and `outage_start_time` columns into one Timestamp object in an `outage_start_datetime` column. I do the same for `outage_restoration_date` and `outage_restoration_time` with the new colun `outage_restoration_datetime`. I then dropped the old columns since all the relevant information is in `outage_start_datetime` and `outage_restoration_datetime`.
-4. After creating valid DateTime columns, I recalculated the outage_duration column using `outage_start_datetime` and `outage_restoration_datetime` to get rid of estimates or inexact duration times, also checking for negative (impossible) durations.
-5. Finally, we check to make sure the data is tidy and the categories have consistent variable naming (no duplicates due to spelling, capitalization, punctuation, etc).
+4. After creating valid DateTime columns, I recalculated the outage_duration column using `outage_start_datetime` and `outage_restoration_datetime` to get rid of estimates or inexact duration times, also checking for negative (impossible) durations. Based whether an event was suspicious (severe weather or equipment failure as cause), I replaced 0 customers_affected with np.Nan. 
+5. Furthermore, we check to make sure the data is tidy and the categories have consistent variable naming (no duplicates due to spelling, capitalization, punctuation, etc).
+6. Finally, I imputed climate_region for where it was missing by the mode of each state in the observation, replacing with 'Unknown' if state isn't known as well. Nan values in total_price and total_sales are also replaced with the medians of their corresponding state.
 A sample of our dataset is available below:
 
 <div style="overflow-x: auto;">
@@ -305,7 +303,7 @@ Here I examined the average severity metrics per NERC region, aggregating using 
 | TRE         | 2,799.27                   | 226,468.65              | 635.62                |
 | WECC        | 1,371.53                   | 133,833.07              | 498.15                |
 
-I also grouped outage counts on state and cause category to see which causes attributed the most to a state`s outages. The first five rows are depicted below.
+I also grouped outage counts on state and cause category to see which causes attributed the most to a state's outages. The first five rows are depicted below.
 
 | State | Equipment Failure | Fuel Supply Emergency | Intentional Attack | Islanding | Public Appeal | Severe Weather | System Operability Disruption |
 |:---|---:|---:|---:|---:|---:|---:|---:|
@@ -321,20 +319,6 @@ I also grouped outage counts on state and cause category to see which causes att
 
 ### Overall Missingness Table
 
-| Column                     | Missing Count |
-|:---|:---|
-| demand_loss_mw             | 700            |
-| customers_affected         | 437            |
-| outage_duration            | 58             |
-| outage_restoration_datetime | 58            |
-| total_sales                | 22             |
-| total_price                | 22             |
-| month                      | 9              |
-| anomaly_level              | 9              |
-| climate_category           | 9              |
-| outage_start_datetime      | 9              |
-| climate_region             | 6              |
-
 ### NMAR Analysis
 Although several columns contain missing data, I believe that demand_loss_mw is plausibly NMAR, because the probability that this field is missing may depend on the true magnitude of the demand loss itself. For instance, utility companies may not report demand lost if an event is under a certain threshold (systematically excluding small losses in demand), or large, extreme events making it impossible to accurately measure due to how large the demand lost is.
 
@@ -347,10 +331,11 @@ To test missingness dependancy, I will focus on demand_loss_mw. I will test this
 First, we examine the missingness rates in demand_loss_mw by cause_category.
 
 Null Hypothesis: The missingness of demand_loss_mw does not depend on cause_category.
+
 Alternative Hypothesis: The missingness of demand_loss_mw does depend on cause_category.
 <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/missingness_plot.html" width=800 height=600 frameBorder=0></iframe>
 
-I found an observed test statistic of 0.799, meaning the largest difference in missingness rates of demand_loss_mw between any two cause categories was approximately 80%. This corresponded to a p-value of 0.0, which allows us to reject the null hypothesis in favor of the alternative hypothesis. This means that there is a significant difference in the missingness of demand_loss_mw depending on the cause_category, meaning that some cause_category values are much more likely to have missing demand_loss_mw than others.
+I found an observed test statistic of 0.433, meaning the largest difference in missingness rates of demand_loss_mw between any two cause categories was approximately 43%. This corresponded to a p-value of 0.0004, which allows us to reject the null hypothesis in favor of the alternative hypothesis. This means that there is a significant difference in the missingness of demand_loss_mw depending on the cause_category, meaning that some cause_category values are much more likely to have missing demand_loss_mw than others.
 
 When compared to the permutation distribution, this observed difference was far larger than what would be expected under the null hypothesis of independence, providing strong evidence that the missingness of demand_loss_mw depends on cause_category.
 <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/permutation_test_plot.html" width=800 height=600 frameBorder=0></iframe>
@@ -359,10 +344,11 @@ When compared to the permutation distribution, this observed difference was far 
 Next, we examine the missingness rates in demand_loss_mw by month.
 
 Null Hypothesis: The missingness of demand_loss_mw does not depend on month.
+
 Alternative Hypothesis: The missingness of demand_loss_mw does depend on month.
 <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/missingness_by_month.html" width=800 height=600 frameBorder=0></iframe>
 
-I found an observed test statistic of 0.224, meaning the largest difference in missingness rates of demand_loss_mw between any two months was approximately 24%. This corresponded to a p-value of 0.0974, which means we fail to reject the null hypothesis in favor of the alternative hypothesis. There is not a significant difference in the missingness of demand_loss_mw depending on the month, so certain month values are not more likely to have missing demand_loss_mw than others.
+I found an observed test statistic of 0.1958, meaning the largest difference in missingness rates of demand_loss_mw between any two months was approximately 20%. This corresponded to a p-value of 0.133, which means we fail to reject the null hypothesis in favor of the alternative hypothesis. There is not a significant difference in the missingness of demand_loss_mw depending on the month, so certain month values are not more likely to have missing demand_loss_mw than others.
 <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/permutation_test_by_month.html" width=800 height=600 frameBorder=0></iframe>
 
 ---
@@ -376,9 +362,9 @@ Null Hypothesis: Outages caused by Severe Weather do not have a statistically si
 Alternative Hypothesis: Outages caused by Severe Weather have a statistically significantly longer average duration than outages caused by other sources (mean duration of severe weather outages is greater than mean duration of outages of other sources).
 
 Test Statistic: For this test, I used a difference in means (mean log_outage_duration of `severe weather` outage causes - mean log_outage_duration of all other sources)
-- Observed Mean Log Duration (Severe Weather): 7.447
-- Observed Mean Log Duration (Other Sources): 4.894
-- Observed Difference in Means (Test Statistic): 2.553
+- Observed Mean Log Duration (Severe Weather): 7.417
+- Observed Mean Log Duration (Other Sources): 4.301
+- Observed Difference in Means (Test Statistic): 3.115
 
 I performed a permutation test with 5,000 simulations to generate an empirical distribution of the test statistic under the null hypothesis. 
 
@@ -415,7 +401,8 @@ At the time of prediction, we would have most features available, including
 - `climate_region`
 - `climate_category`
 - `anomaly_level`
-- `demand_missing`
+- `is_demand_missing`
+- `is_severe_weather`
 - `start_hour`
 - `year`
 
@@ -437,7 +424,7 @@ My base model is a Ridge Regression model using the features specified above. Th
 
 First, I filtered out observations that were missing values in their log_outage_duration columns, then filtered out observations with 0 customers affected (because customers wouldn't know if an outage occurred if they weren't affected). Then, I split my data into a train (80%) and test (20%) set, using a random state to ensure reproducibility. Next, I fit a pipeline where the missing numerical values were imputed with the median of their columns, while also adding an indicator that these values were imputed. Numerical values were also scaled with StandardScalar, then I did One-Hot Encoding for categorical variables before dropping the excluded columns. 
 
-The performance of this baseline model was quite bad, with an R^2 of 0.2194 and RMSE of 2.0432. This means that (when converted back into minutes) the real performance was off by a Mean Absolute Error of 2664.17 mins and Median Absolute Error of 936.79 mins.
+The performance of this baseline model was quite bad, with an R^2 of 0.2180 and RMSE of 2.0450. This means that (when converted back into minutes) the real performance was off by a Mean Absolute Error of 2673.73 mins and Median Absolute Error of 918.21 mins.
 
 ---
 
@@ -470,12 +457,12 @@ My final model is a Random Forest Regressor, which included many of the same fea
      repair prioritization policies.
 
 Next, I proceeded to use the same imputation, scaling, and OHE pipeline before using GridSearchCV to tune my hyperparameters, getting the best results with
-- regressor__max_features: 0.5
+- regressor__max_features: 0.4
 - regressor__min_samples_leaf: 4
 - regressor__min_samples_split: 10
-- regressor__n_estimators: 200
+- regressor__n_estimators: 150
 
-My final metrics included a Test R^2 of 0.3736 (improved by about 15%) and a Test RMSE of 1.8303. In minutes, this new model had Mean Absolute Error of 2096.56 mins and a Median Absolute Error of 723.80 mins, down from by about 567.61 minutes for the MAE and 212.99 for the MAE. Overall, the Random Forest Regressor model outperformed the Ridge Regression model, capturing more non-linear relationships and interactions between features while also fitting patterns better.
+My final metrics included a Test R^2 of 0.3690 (improved by about 15%) and a Test RMSE of 1.8371. In minutes, this new model had Mean Absolute Error of 2118.95 mins and a Median Absolute Error of 741.32 mins, beating the baseline model by 554.78 mins and 176.89 mins respectively. Overall, the Random Forest Regressor model outperformed the Ridge Regression model, capturing more non-linear relationships and interactions between features while also fitting patterns better.
 
 ---
 
@@ -491,5 +478,5 @@ Null Hypothesis: This model is fair. The RMSE for predicting the `log_outage_dur
 Alternative Hypothesis: This model is not fair. The RMSE for predicting the `log_outage_duration` for observations with lower than median `pc_realgsp_state` is not the same as observations with higher than median `pc_realgsp_state`.
 
 Test Statistic: absolute difference in RMSE (calculated as lower - higher)
-I performed a permutation test with 5000 trials to represent the empirical distribution under the null. With the standard significance level of 0.05, I failed to reject the null hypothesis with a p-value of 0.5572. Thus, we can conclude that the model is not overly biased in predicting the `log_outage_duration` for states with lower `pc_realgsp_state` compared to states with higher `pc_realgsp_state`.
+I performed a permutation test with 5000 trials to represent the empirical distribution under the null. With the standard significance level of 0.05, I failed to reject the null hypothesis with a p-value of 0.4872. Thus, we can conclude that the model is not overly biased in predicting the `log_outage_duration` for states with lower `pc_realgsp_state` compared to states with higher `pc_realgsp_state`.
 <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/fairness_analysis_gsp.html" width=800 height=600 frameBorder=0></iframe>
