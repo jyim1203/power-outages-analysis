@@ -95,15 +95,162 @@ Our first step is to clean the data and make it more suitable for analysis.
 A sample of our dataset is available below:
 
 <div style="overflow-x: auto;">
-
-|   year |   month | us_state   | nerc_region   | climate_region     | climate_category   |   anomaly_level |   outage_duration | cause_category     |   demand_loss_mw |   customers_affected |   total_price |   total_sales |   total_customers |   poppct_urban |   popden_urban |   areapct_urban |   util_realgsp |   total_realgsp |   util_contri |   population | outage_start_datetime   | outage_restoration_datetime   |
-|-------:|--------:|:-----------|:--------------|:-------------------|:-------------------|----------------:|------------------:|:-------------------|-----------------:|---------------------:|--------------:|--------------:|------------------:|---------------:|---------------:|----------------:|---------------:|----------------:|--------------:|-------------:|:------------------------|:------------------------------|
-|   2011 |       7 | Minnesota  | MRO           | East North Central | normal             |            -0.3 |              3060 | severe weather     |              nan |                70000 |          9.28 |   6.56252e+06 |       2.5957e+06  |          73.27 |           2279 |            2.14 |           4802 |          274182 |       1.75139 |  5.34812e+06 | 2011-07-01 17:00:00     | 2011-07-03 20:00:00           |
-|   2014 |       5 | Minnesota  | MRO           | East North Central | normal             |            -0.1 |                 1 | intentional attack |              nan |                  nan |          9.28 |   5.28423e+06 |       2.64074e+06 |          73.27 |           2279 |            2.14 |           5226 |          291955 |       1.79    |  5.45712e+06 | 2014-05-11 18:38:00     | 2014-05-11 18:39:00           |
-|   2010 |      10 | Minnesota  | MRO           | East North Central | cold               |            -1.5 |              3000 | severe weather     |              nan |                70000 |          8.15 |   5.22212e+06 |       2.5869e+06  |          73.27 |           2279 |            2.14 |           4571 |          267895 |       1.70627 |  5.3109e+06  | 2010-10-26 20:00:00     | 2010-10-28 22:00:00           |
-|   2012 |       6 | Minnesota  | MRO           | East North Central | normal             |            -0.1 |              2550 | severe weather     |              nan |                68200 |          9.19 |   5.78706e+06 |       2.60681e+06 |          73.27 |           2279 |            2.14 |           5364 |          277627 |       1.93209 |  5.38044e+06 | 2012-06-19 04:30:00     | 2012-06-20 23:00:00           |
-|   2015 |       7 | Minnesota  | MRO           | East North Central | warm               |             1.2 |              1740 | severe weather     |              250 |               250000 |         10.43 |   5.97034e+06 |       2.67353e+06 |          73.27 |           2279 |            2.14 |           4873 |          292023 |       1.6687  |  5.48959e+06 | 2015-07-18 02:00:00     | 2015-07-19 07:00:00           |
-
+  <table border="1" class="dataframe">
+    <thead>
+      <tr style="text-align: right;">
+        <th>year</th>
+        <th>month</th>
+        <th>us_state</th>
+        <th>nerc_region</th>
+        <th>climate_region</th>
+        <th>climate_category</th>
+        <th>anomaly_level</th>
+        <th>outage_duration</th>
+        <th>cause_category</th>
+        <th>demand_loss_mw</th>
+        <th>customers_affected</th>
+        <th>total_price</th>
+        <th>total_sales</th>
+        <th>total_customers</th>
+        <th>poppct_urban</th>
+        <th>popden_urban</th>
+        <th>areapct_urban</th>
+        <th>util_realgsp</th>
+        <th>total_realgsp</th>
+        <th>util_contri</th>
+        <th>population</th>
+        <th>outage_start_datetime</th>
+        <th>outage_restoration_datetime</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2011</td>
+        <td>7</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>normal</td>
+        <td>-0.3</td>
+        <td>3060</td>
+        <td>severe weather</td>
+        <td>nan</td>
+        <td>70000</td>
+        <td>9.28</td>
+        <td>6.56252e+06</td>
+        <td>2.5957e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>4802</td>
+        <td>274182</td>
+        <td>1.75139</td>
+        <td>5.34812e+06</td>
+        <td>2011-07-01 17:00:00</td>
+        <td>2011-07-03 20:00:00</td>
+      </tr>
+      <tr>
+        <td>2014</td>
+        <td>5</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>normal</td>
+        <td>-0.1</td>
+        <td>1</td>
+        <td>intentional attack</td>
+        <td>nan</td>
+        <td>nan</td>
+        <td>9.28</td>
+        <td>5.28423e+06</td>
+        <td>2.64074e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>5226</td>
+        <td>291955</td>
+        <td>1.79</td>
+        <td>5.45712e+06</td>
+        <td>2014-05-11 18:38:00</td>
+        <td>2014-05-11 18:39:00</td>
+      </tr>
+      <tr>
+        <td>2010</td>
+        <td>10</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>cold</td>
+        <td>-1.5</td>
+        <td>3000</td>
+        <td>severe weather</td>
+        <td>nan</td>
+        <td>70000</td>
+        <td>8.15</td>
+        <td>5.22212e+06</td>
+        <td>2.5869e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>4571</td>
+        <td>267895</td>
+        <td>1.70627</td>
+        <td>5.3109e+06</td>
+        <td>2010-10-26 20:00:00</td>
+        <td>2010-10-28 22:00:00</td>
+      </tr>
+      <tr>
+        <td>2012</td>
+        <td>6</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>normal</td>
+        <td>-0.1</td>
+        <td>2550</td>
+        <td>severe weather</td>
+        <td>nan</td>
+        <td>68200</td>
+        <td>9.19</td>
+        <td>5.78706e+06</td>
+        <td>2.60681e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>5364</td>
+        <td>277627</td>
+        <td>1.93209</td>
+        <td>5.38044e+06</td>
+        <td>2012-06-19 04:30:00</td>
+        <td>2012-06-20 23:00:00</td>
+      </tr>
+      <tr>
+        <td>2015</td>
+        <td>7</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>warm</td>
+        <td>1.2</td>
+        <td>1740</td>
+        <td>severe weather</td>
+        <td>250</td>
+        <td>250000</td>
+        <td>10.43</td>
+        <td>5.97034e+06</td>
+        <td>2.67353e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>4873</td>
+        <td>292023</td>
+        <td>1.6687</td>
+        <td>5.48959e+06</td>
+        <td>2015-07-18 02:00:00</td>
+        <td>2015-07-19 07:00:00</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 ### Exploratory Data Analysis
@@ -112,30 +259,30 @@ A sample of our dataset is available below:
 In my EDA, I first focus on univariate analysis to better understand the distribution of certain variables of interest.
 
 First, we examine the counts of outages over time.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/annual_outages_line.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/annual_outages_line.html" width=800 height=600 frameBorder=0></iframe> -->
 
 Then, we have the distribution of major outages across different cause categories.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/outages_causes.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/outages_causes.html" width=800 height=600 frameBorder=0></iframe> -->
 
 Next, I plotted the number of outages by US state.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/outages_by_state.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/outages_by_state.html" width=800 height=600 frameBorder=0></iframe> -->
 
 Finally, I plotted the distribution of outage durations.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/raw_outage_duration.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/raw_outage_duration.html" width=800 height=600 frameBorder=0></iframe> -->
 
 Since this plot had a very heavy skew, I also plotted the log-transformed outage durations.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/log_outage_duration.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/log_outage_duration.html" width=800 height=600 frameBorder=0></iframe> -->
 
 #### Bivariate Analysis
 
 To further examine the relationship between outage duration and the cause of the outage, I created the violin plot below. This also helps us better picture the frequency of some of the outage events, as well as get a better picture of the median duration of outages from each cause category. It also helps show how some of the longest outage durations are within the fuel supply emergency and equipment failure categories. 
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/vio_duration_by_cause.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/vio_duration_by_cause.html" width=800 height=600 frameBorder=0></iframe> -->
 
 There appears to be a positive correlation, with the number of customers affected growing as the number of total customers increases as well. However, there are still many cases in which the number of customers affected exceeds the number of total customers in the state. This may either be a data quality issue, or perhaps the outage spans greater areas, spilling into other states or populous regions. However, this happens very infrequently, with the majority of observations having less customers affected than total customers (as expected). 
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/customers_total_vs_affected.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/customers_total_vs_affected.html" width=800 height=600 frameBorder=0></iframe> -->
 
 Examining the relationship between Outage Duration and Customers Affected, we notice a cluster where typical outages affect between roughly 40,000 and 400,000 customers, lasting between 100 and 10,000 minutes. Overall, most outages seem to be confined within this range of moderate magnitude and duration, although the vertical spread indicates duration can vary significantly across observations. Notably, there is a lack of a strong positive correlation, which we would expect with major outages affecting many customers also having a longer duration, but there may be a weaker relationship present.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/duration_vs_affected.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/duration_vs_affected.html" width=800 height=600 frameBorder=0></iframe> -->
 
 #### Grouping and Aggregate Analysis
 
@@ -201,22 +348,22 @@ First, we examine the missingness rates in demand_loss_mw by cause_category.
 
 Null Hypothesis: The missingness of demand_loss_mw does not depend on cause_category.
 Alternative Hypothesis: The missingness of demand_loss_mw does depend on cause_category.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/missingness_plot.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/missingness_plot.html" width=800 height=600 frameBorder=0></iframe> -->
 
 I found an observed test statistic of 0.799, meaning the largest difference in missingness rates of demand_loss_mw between any two cause categories was approximately 80%. This corresponded to a p-value of 0.0, which allows us to reject the null hypothesis in favor of the alternative hypothesis. This means that there is a significant difference in the missingness of demand_loss_mw depending on the cause_category, meaning that some cause_category values are much more likely to have missing demand_loss_mw than others.
 
 When compared to the permutation distribution, this observed difference was far larger than what would be expected under the null hypothesis of independence, providing strong evidence that the missingness of demand_loss_mw depends on cause_category.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/permutation_test_plot.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/permutation_test_plot.html" width=800 height=600 frameBorder=0></iframe> -->
 
 #### Month
 Next, we examine the missingness rates in demand_loss_mw by month.
 
 Null Hypothesis: The missingness of demand_loss_mw does not depend on month.
 Alternative Hypothesis: The missingness of demand_loss_mw does depend on month.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/missingness_by_month.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/missingness_by_month.html" width=800 height=600 frameBorder=0></iframe> -->
 
 I found an observed test statistic of 0.224, meaning the largest difference in missingness rates of demand_loss_mw between any two months was approximately 24%. This corresponded to a p-value of 0.0974, which means we fail to reject the null hypothesis in favor of the alternative hypothesis. There is not a significant difference in the missingness of demand_loss_mw depending on the month, so certain month values are not more likely to have missing demand_loss_mw than others.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/permutation_test_by_month.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/permutation_test_by_month.html" width=800 height=600 frameBorder=0></iframe> -->
 
 ---
 
@@ -238,7 +385,7 @@ I performed a permutation test with 5,000 simulations to generate an empirical d
 I got a P-Value of 0.000, so with a standard significance level of 0.05, we reject the null hypothesis in favor of the alternative because the results are statistically significant. On average, the duration of outages caused by severe weather are longer than the durations of outages not caused by severe weather. 
 
 The plot below illustrates our observed difference compared to the empirical distribution of differences under the null generated from the permutation test.
-<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/hypothesis_test.html" width=800 height=600 frameBorder=0></iframe>
+<!--  <iframe src="https://jyim1203.github.io/power-outages-analysis/plots/hypothesis_test.html" width=800 height=600 frameBorder=0></iframe> -->
 
 ---
 
