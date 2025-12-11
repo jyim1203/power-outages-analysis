@@ -333,5 +333,3 @@ My final metrics included a Test R^2 of 0.3736 (improved by about 15%) and a Tes
 
 ## Fairness Analysis
 My groups for the fairness analysis include Urban and Rural areas, defining areas with above the median population density in urban areas
-
-
