@@ -13,7 +13,7 @@ In this project, I analyzed a dataset of major U.S. power outages from January 2
 
 My analysis will proceed in four main stages:
 
-1. Data Cleaning and Exploratory Analysis to understand the dataset's structure and distributions.
+1. Data Cleaning and Exploratory Analysis to understand the dataset`s structure and distributions.
 
 2. Missingness Analysis to examine the mechanisms and dependencies of missing data.
 
@@ -21,7 +21,7 @@ My analysis will proceed in four main stages:
 
 4. Predictive Modeling to forecast the duration (length) of an outage.
 
-First, I will clean the data and visualize key features to uncover initial patterns. My core research question is: How long can we expect a major power outage to last based on information typically available to an impacted individual or utility? I will build a model to predict outage duration using accessible features such as the time of occurrence (month, year, hour), location (state, climate region), and more, while withholding the exact cause of the outage. Accurately predicting outage length is crucial for utilities to optimize response efforts and resource allocation, and for communities and emergency services to improve preparedness and mitigate economic and public safety impacts. From the impacted consumer's point of view, it may also help individuals make informed decisions, from how to prepare for longer outages, staying safe without power, reducing anxiety and worries, and more.
+First, I will clean the data and visualize key features to uncover initial patterns. My core research question is: How long can we expect a major power outage to last based on information typically available to an impacted individual or utility? I will build a model to predict outage duration using accessible features such as the time of occurrence (month, year, hour), location (state, climate region), and more, while withholding the exact cause of the outage. Accurately predicting outage length is crucial for utilities to optimize response efforts and resource allocation, and for communities and emergency services to improve preparedness and mitigate economic and public safety impacts. From the impacted consumer`s point of view, it may also help individuals make informed decisions, from how to prepare for longer outages, staying safe without power, reducing anxiety and worries, and more.
 
 The dataset contains 1,534 outages (rows) described by 57 features (columns), including information on outage characteristics, geography, climate, and state-level economic statistics. For this analysis, I will focus on a curated subset of these features.
 
@@ -63,47 +63,194 @@ Our first step is to clean the data and make it more suitable for analysis.
 
 ### Data Cleaning
 1. I start by dropping irrelevant columns, keeping only the features of interest listed below for analysis:     
-    'year',
-    'month',
-    'us_state',
-    'nerc_region',
-    'climate_region',
-    'climate_category',
-    'anomaly_level',
-    'outage_start_date',
-    'outage_start_time',
-    'outage_restoration_date',
-    'outage_restoration_time',
-    'outage_duration',
-    'cause_category',
-    'demand_loss_mw',
-    'customers_affected',
-    'total_price',
-    'total_sales',
-    'total_customers',
-    'poppct_urban',
-    'popden_urban',
-    'areapct_urban',
-    'util_realgsp',
-    'total_realgsp',
-    'util_contri',
-    'population'
+    `year`,
+    `month`,
+    `us_state`,
+    `nerc_region`,
+    `climate_region`,
+    `climate_category`,
+    `anomaly_level`,
+    `outage_start_date`,
+    `outage_start_time`,
+    `outage_restoration_date`,
+    `outage_restoration_time`,
+    `outage_duration`,
+    `cause_category`,
+    `demand_loss_mw`,
+    `customers_affected`,
+    `total_price`,
+    `total_sales`,
+    `total_customers`,
+    `poppct_urban`,
+    `popden_urban`,
+    `areapct_urban`,
+    `util_realgsp`,
+    `total_realgsp`,
+    `util_contri`,
+    `population`
 2. Then, I make sure the columns are of the right data types and drop duplicate observations (10 observations dropped).
-3. Next, I combined the 'outage_start_date' and 'outage_start_time' columns into one Timestamp object in an 'outage_start_datetime' column. I do the same for 'outage_restoration_date' and 'outage_restoration_time' with the new colun 'outage_restoration_datetime'. I then dropped the old columns since all the relevant information is in 'outage_start_datetime' and 'outage_restoration_datetime'.
-4. After creating valid DateTime columns, I recalculated the outage_duration column using 'outage_start_datetime' and 'outage_restoration_datetime' to get rid of estimates or inexact duration times, also checking for negative (impossible) durations.
+3. Next, I combined the `outage_start_date` and `outage_start_time` columns into one Timestamp object in an `outage_start_datetime` column. I do the same for `outage_restoration_date` and `outage_restoration_time` with the new colun `outage_restoration_datetime`. I then dropped the old columns since all the relevant information is in `outage_start_datetime` and `outage_restoration_datetime`.
+4. After creating valid DateTime columns, I recalculated the outage_duration column using `outage_start_datetime` and `outage_restoration_datetime` to get rid of estimates or inexact duration times, also checking for negative (impossible) durations.
 5. Finally, we check to make sure the data is tidy and the categories have consistent variable naming (no duplicates due to spelling, capitalization, punctuation, etc).
 A sample of our dataset is available below:
 
 <div style="overflow-x: auto;">
-
-| year | month | us_state | nerc_region | climate_region | climate_category | anomaly_level | outage_duration | cause_category | demand_loss_mw | customers_affected | total_price | total_sales | total_customers | poppct_urban | popden_urban | areapct_urban | util_realgsp | total_realgsp | util_contri | population | outage_start_datetime | outage_restoration_datetime |
-|---:|---:|:---|:---|:---|:---|---:|---:|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|:---|:---|
-| 2011 | 7 | Minnesota | MRO | East North Central | normal | -0.3 | 3060 | severe weather | nan | 70000 | 9.28 | 6.56252e+06 | 2.5957e+06 | 73.27 | 2279 | 2.14 | 4802 | 274182 | 1.75139 | 5.34812e+06 | 2011-07-01 17:00:00 | 2011-07-03 20:00:00 |
-| 2014 | 5 | Minnesota | MRO | East North Central | normal | -0.1 | 1 | intentional attack | nan | nan | 9.28 | 5.28423e+06 | 2.64074e+06 | 73.27 | 2279 | 2.14 | 5226 | 291955 | 1.79 | 5.45712e+06 | 2014-05-11 18:38:00 | 2014-05-11 18:39:00 |
-| 2010 | 10 | Minnesota | MRO | East North Central | cold | -1.5 | 3000 | severe weather | nan | 70000 | 8.15 | 5.22212e+06 | 2.5869e+06 | 73.27 | 2279 | 2.14 | 4571 | 267895 | 1.70627 | 5.3109e+06 | 2010-10-26 20:00:00 | 2010-10-28 22:00:00 |
-| 2012 | 6 | Minnesota | MRO | East North Central | normal | -0.1 | 2550 | severe weather | nan | 68200 | 9.19 | 5.78706e+06 | 2.60681e+06 | 73.27 | 2279 | 2.14 | 5364 | 277627 | 1.93209 | 5.38044e+06 | 2012-06-19 04:30:00 | 2012-06-20 23:00:00 |
-| 2015 | 7 | Minnesota | MRO | East North Central | warm | 1.2 | 1740 | severe weather | 250 | 250000 | 10.43 | 5.97034e+06 | 2.67353e+06 | 73.27 | 2279 | 2.14 | 4873 | 292023 | 1.6687 | 5.48959e+06 | 2015-07-18 02:00:00 | 2015-07-19 07:00:00 |
-
+  <table border="1" class="dataframe">
+    <thead>
+      <tr style="text-align: right;">
+        <th>year</th>
+        <th>month</th>
+        <th>us_state</th>
+        <th>nerc_region</th>
+        <th>climate_region</th>
+        <th>climate_category</th>
+        <th>anomaly_level</th>
+        <th>outage_duration</th>
+        <th>cause_category</th>
+        <th>demand_loss_mw</th>
+        <th>customers_affected</th>
+        <th>total_price</th>
+        <th>total_sales</th>
+        <th>total_customers</th>
+        <th>poppct_urban</th>
+        <th>popden_urban</th>
+        <th>areapct_urban</th>
+        <th>util_realgsp</th>
+        <th>total_realgsp</th>
+        <th>util_contri</th>
+        <th>population</th>
+        <th>outage_start_datetime</th>
+        <th>outage_restoration_datetime</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>2011</td>
+        <td>7</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>normal</td>
+        <td>-0.3</td>
+        <td>3060</td>
+        <td>severe weather</td>
+        <td>nan</td>
+        <td>70000</td>
+        <td>9.28</td>
+        <td>6.56252e+06</td>
+        <td>2.5957e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>4802</td>
+        <td>274182</td>
+        <td>1.75139</td>
+        <td>5.34812e+06</td>
+        <td>2011-07-01 17:00:00</td>
+        <td>2011-07-03 20:00:00</td>
+      </tr>
+      <tr>
+        <td>2014</td>
+        <td>5</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>normal</td>
+        <td>-0.1</td>
+        <td>1</td>
+        <td>intentional attack</td>
+        <td>nan</td>
+        <td>nan</td>
+        <td>9.28</td>
+        <td>5.28423e+06</td>
+        <td>2.64074e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>5226</td>
+        <td>291955</td>
+        <td>1.79</td>
+        <td>5.45712e+06</td>
+        <td>2014-05-11 18:38:00</td>
+        <td>2014-05-11 18:39:00</td>
+      </tr>
+      <tr>
+        <td>2010</td>
+        <td>10</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>cold</td>
+        <td>-1.5</td>
+        <td>3000</td>
+        <td>severe weather</td>
+        <td>nan</td>
+        <td>70000</td>
+        <td>8.15</td>
+        <td>5.22212e+06</td>
+        <td>2.5869e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>4571</td>
+        <td>267895</td>
+        <td>1.70627</td>
+        <td>5.3109e+06</td>
+        <td>2010-10-26 20:00:00</td>
+        <td>2010-10-28 22:00:00</td>
+      </tr>
+      <tr>
+        <td>2012</td>
+        <td>6</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>normal</td>
+        <td>-0.1</td>
+        <td>2550</td>
+        <td>severe weather</td>
+        <td>nan</td>
+        <td>68200</td>
+        <td>9.19</td>
+        <td>5.78706e+06</td>
+        <td>2.60681e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>5364</td>
+        <td>277627</td>
+        <td>1.93209</td>
+        <td>5.38044e+06</td>
+        <td>2012-06-19 04:30:00</td>
+        <td>2012-06-20 23:00:00</td>
+      </tr>
+      <tr>
+        <td>2015</td>
+        <td>7</td>
+        <td>Minnesota</td>
+        <td>MRO</td>
+        <td>East North Central</td>
+        <td>warm</td>
+        <td>1.2</td>
+        <td>1740</td>
+        <td>severe weather</td>
+        <td>250</td>
+        <td>250000</td>
+        <td>10.43</td>
+        <td>5.97034e+06</td>
+        <td>2.67353e+06</td>
+        <td>73.27</td>
+        <td>2279</td>
+        <td>2.14</td>
+        <td>4873</td>
+        <td>292023</td>
+        <td>1.6687</td>
+        <td>5.48959e+06</td>
+        <td>2015-07-18 02:00:00</td>
+        <td>2015-07-19 07:00:00</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 ### Exploratory Data Analysis
@@ -158,7 +305,7 @@ Here I examined the average severity metrics per NERC region, aggregating using 
 | TRE         | 2,799.27                   | 226,468.65              | 635.62                |
 | WECC        | 1,371.53                   | 133,833.07              | 498.15                |
 
-I also grouped outage counts on state and cause category to see which causes attributed the most to a state's outages. The first five rows are depicted below.
+I also grouped outage counts on state and cause category to see which causes attributed the most to a state`s outages. The first five rows are depicted below.
 
 | State | Equipment Failure | Fuel Supply Emergency | Intentional Attack | Islanding | Public Appeal | Severe Weather | System Operability Disruption |
 |:---|---:|---:|---:|---:|---:|---:|---:|
@@ -228,7 +375,7 @@ Null Hypothesis: Outages caused by Severe Weather do not have a statistically si
 
 Alternative Hypothesis: Outages caused by Severe Weather have a statistically significantly longer average duration than outages caused by other sources (mean duration of severe weather outages is greater than mean duration of outages of other sources).
 
-Test Statistic: For this test, I used a difference in means (mean log_outage_duration of 'severe weather' outage causes - mean log_outage_duration of all other sources)
+Test Statistic: For this test, I used a difference in means (mean log_outage_duration of `severe weather` outage causes - mean log_outage_duration of all other sources)
 - Observed Mean Log Duration (Severe Weather): 7.447
 - Observed Mean Log Duration (Other Sources): 4.894
 - Observed Difference in Means (Test Statistic): 2.553
@@ -249,37 +396,37 @@ The metrics I will be mainly focusing on include mainly R^2 and RMSE to attempt 
 
 At the time of prediction, we would have most features available, including
 ### Numeric Features
-- total_price
-- total_sales
-- total_customers
-- poppct_urban
-- popden_urban
-- areapct_urban
-- util_realgsp
-- util_contri
-- pc_realgsp_state
-- total_realgsp
-- population
+- `total_price`
+- `total_sales`
+- `total_customers`
+- `poppct_urban`
+- `popden_urban`
+- `areapct_urban`
+- `util_realgsp`
+- `util_contri`
+- `pc_realgsp_state`
+- `total_realgsp`
+- `population`
 
 ### Categorical Features
-- month
-- us_state
-- nerc_region
-- climate_region
-- climate_category
-- anomaly_level
-- demand_missing
-- start_hour
-- year
+- `month`
+- `us_state`
+- `nerc_region`
+- `climate_region`
+- `climate_category`
+- `anomaly_level`
+- `demand_missing`
+- `start_hour`
+- `year`
 
 ### Excluded Columns
-- log_outage_duration
-- outage_duration
-- outage_restoration_datetime
-- demand_loss_mw
-- outage_start_datetime
-- cause_category
-- customers_affected
+- `log_outage_duration`
+- `outage_duration`
+- `outage_restoration_datetime`
+- `demand_loss_mw`
+- `outage_start_datetime`
+- `cause_category`
+- `customers_affected`
 
 in our baseline model. This will hopefully allow us to predict how long an outage would last, including some information that might be available to typical consumers while withholding certain other information more involved with the specific outage (such as cause_category, time information, customers_affected, and others that may not be known at the time of the outage).
 
@@ -301,7 +448,7 @@ My final model is a Random Forest Regressor, which included many of the same fea
    - Rationale: Repair crew availability differs on weekends vs weekdays.
      Weekend staffing is typically reduced, potentially leading to longer
      restoration times. This captures day-of-week patterns not present in
-     the 'start_hour' feature.
+     the `start_hour` feature.
 
 2. year_month (Categorical Feature)  
    - Derived from: Combining year + month as "YYYY-MM"
@@ -333,4 +480,16 @@ My final metrics included a Test R^2 of 0.3736 (improved by about 15%) and a Tes
 ---
 
 ## Fairness Analysis
-My groups for the fairness analysis include Urban and Rural areas, defining areas with above the median population density in urban areas
+My groups for the fairness analysis include states where the per capita gross state product is higher than the median `pc_realgsp_state`, and states where the `pc_realgsp_state` is lower than the median. 
+
+I decided on these groups because I wanted to see if groups that were more vulnerable, such as people living in states that are typically less wealthy per capita, are disproportionately affected by this model. I wanted to make sure that, no matter how disadvantaged a group could be in terms of how much money they have, my model would still serve about as equally as groups with more resources available. 
+
+My evaluation metric will be the Root Mean Squared Error (RMSE) because it punishes large prediction mistakes more than other metrics (such as MAE). Since it is more sensitive to outliers, we can avoid having large errors for states with lower `pc_realgsp_state`, which would help encourage fairness in our model.  
+
+Null Hypothesis: This model is fair. The RMSE for predicting the `log_outage_duration` for observations with lower than median `pc_realgsp_state` is the same as observations with higher than median `pc_realgsp_state`.
+
+Alternative Hypothesis: This model is not fair. The RMSE for predicting the `log_outage_duration` for observations with lower than median `pc_realgsp_state` is not the same as observations with higher than median `pc_realgsp_state`.
+
+Test Statistic: absolute difference in RMSE (calculated as lower - higher)
+I performed a permutation test with 5000 trials to represent the empirical distribution under the null. With the standard significance level of 0.05, I failed to reject the null hypothesis with a p-value of 0.5572. Thus, we can conclude that the model is not overly biased in predicting the `log_outage_duration` for states with lower `pc_realgsp_state` compared to states with higher `pc_realgsp_state`.
+<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/fairness_analysis_gsp.html" width=800 height=600 frameBorder=0></iframe>
