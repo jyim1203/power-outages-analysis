@@ -111,37 +111,37 @@ A sample of our dataset is available below:
 In my EDA, I first focus on univariate analysis to better understand the distribution of certain variables of interest.
 
 First, we examine the counts of outages over time.
-<iframe src="plots/annual_outages_line.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/annual_outages_line.html" width=800 height=600 frameBorder=0></iframe>
 
 Then, we have the distribution of major outages across different cause categories.
-<iframe src="plots/outages_causes.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/outages_causes.html" width=800 height=600 frameBorder=0></iframe>
 
 Next, I plotted the number of outages by US state.
-<iframe src="plots/outages_by_state.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/outages_by_state.html" width=800 height=600 frameBorder=0></iframe>
 
 Finally, I plotted the distribution of outage durations.
-<iframe src="plots/raw_outage_duration.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/raw_outage_duration.html" width=800 height=600 frameBorder=0></iframe>
 
 Since this plot had a very heavy skew, I also plotted the log-transformed outage durations.
-<iframe src="plots/log_outage_duration.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/log_outage_duration.html" width=800 height=600 frameBorder=0></iframe>
 
 #### Bivariate Analysis
 
 To further examine the relationship between outage duration and the cause of the outage, I created the violin plot below. This also helps us better picture the frequency of some of the outage events, as well as get a better picture of the median duration of outages from each cause category. It also helps show how some of the longest outage durations are within the fuel supply emergency and equipment failure categories. 
-<iframe src="plots/vio_duration_by_cause.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/vio_duration_by_cause.html" width=800 height=600 frameBorder=0></iframe>
 
 There appears to be a positive correlation, with the number of customers affected growing as the number of total customers increases as well. However, there are still many cases in which the number of customers affected exceeds the number of total customers in the state. This may either be a data quality issue, or perhaps the outage spans greater areas, spilling into other states or populous regions. However, this happens very infrequently, with the majority of observations having less customers affected than total customers (as expected). 
-<iframe src="plots/customers_total_vs_affected.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/plots/customers_total_vs_affected.html" width=800 height=600 frameBorder=0></iframe>
 
 Examining the relationship between Outage Duration and Customers Affected, we notice a cluster where typical outages affect between roughly 40,000 and 400,000 customers, lasting between 100 and 10,000 minutes. Overall, most outages seem to be confined within this range of moderate magnitude and duration, although the vertical spread indicates duration can vary significantly across observations. Notably, there is a lack of a strong positive correlation, which we would expect with major outages affecting many customers also having a longer duration, but there may be a weaker relationship present.
-<iframe src="plots/duration_vs_affected.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/https://jyim1203.github.io/power-outages-analysis/plots/duration_vs_affected.html" width=800 height=600 frameBorder=0></iframe>
 
 #### Grouping and Aggregate Analysis
 
 Here I examined the average severity metrics per NERC region, aggregating using the mean metrics for each region. As expected, larger, populus regions tend to have higher numbers of customers affected. However, outage durations vary wildly, perhaps due to differences in region, terrain, infrastructure, or other factors. Regions with higher average demand lost may indicate more serious reliability issues, while lower demand losses can appear less severe from a system-stress perspective. Still, our data remains incomplete, as evidenced by the missing values.
 
 | NERC Region | Avg Outage Duration (min) | Avg Customers Affected | Avg Demand Loss (MW) |
-|-------------|----------------------------|-------------------------|------------------------|
+|:---|---:|---:|---:|
 | ASCC        | NaN                        | 14,273.00               | 35.00                 |
 | ECAR        | 5,603.31                   | 256,354.19              | 1,314.48              |
 | FRCC        | 4,268.73                   | 303,577.14              | 846.79                |
@@ -159,13 +159,13 @@ Here I examined the average severity metrics per NERC region, aggregating using 
 
 I also grouped outage counts on state and cause category to see which causes attributed the most to a state's outages. The first five rows are depicted below.
 
-| State      | Equipment Failure | Fuel Supply Emergency | Intentional Attack | Islanding | Public Appeal | Severe Weather | System Operability Disruption |
-|------------|--------------------|------------------------|---------------------|-----------|----------------|----------------|--------------------------------|
-| Alabama    | 0                  | 0                      | 1                   | 0         | 0              | 4              | 0                              |
-| Alaska     | 0                  | 0                      | 0                   | 0         | 0              | 0              | 0                              |
-| Arizona    | 4                  | 0                      | 18                  | 0         | 0              | 3              | 2                              |
-| Arkansas   | 1                  | 0                      | 6                   | 1         | 7              | 10             | 0                              |
-| California | 21                 | 17                     | 24                  | 28        | 9              | 69             | 41                             |
+| State | Equipment Failure | Fuel Supply Emergency | Intentional Attack | Islanding | Public Appeal | Severe Weather | System Operability Disruption |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| Alabama | 0 | 0 | 1 | 0 | 0 | 4 | 0 |
+| Alaska | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
+| Arizona | 4 | 0 | 18 | 0 | 0 | 3 | 2 |
+| Arkansas | 1 | 0 | 6 | 1 | 7 | 10 | 0 |
+| California | 21 | 17 | 24 | 28 | 9 | 69 | 41 |
 
 ---
 
@@ -174,7 +174,7 @@ I also grouped outage counts on state and cause category to see which causes att
 ### Overall Missingness Table
 
 | Column                     | Missing Count |
-|----------------------------|----------------|
+|:---|:---|
 | demand_loss_mw             | 700            |
 | customers_affected         | 437            |
 | outage_duration            | 58             |
@@ -200,22 +200,22 @@ First, we examine the missingness rates in demand_loss_mw by cause_category.
 
 Null Hypothesis: The missingness of demand_loss_mw does not depend on cause_category.
 Alternative Hypothesis: The missingness of demand_loss_mw does depend on cause_category.
-<iframe src="plots/missingness_plot.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/https://jyim1203.github.io/power-outages-analysis/plots/missingness_plot.html" width=800 height=600 frameBorder=0></iframe>
 
 I found an observed test statistic of 0.799, meaning the largest difference in missingness rates of demand_loss_mw between any two cause categories was approximately 80%. This corresponded to a p-value of 0.0, which allows us to reject the null hypothesis in favor of the alternative hypothesis. This means that there is a significant difference in the missingness of demand_loss_mw depending on the cause_category, meaning that some cause_category values are much more likely to have missing demand_loss_mw than others.
 
 When compared to the permutation distribution, this observed difference was far larger than what would be expected under the null hypothesis of independence, providing strong evidence that the missingness of demand_loss_mw depends on cause_category.
-<iframe src="plots/permutation_test_plot.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/https://jyim1203.github.io/power-outages-analysis/plots/permutation_test_plot.html" width=800 height=600 frameBorder=0></iframe>
 
 #### Month
 Next, we examine the missingness rates in demand_loss_mw by month.
 
 Null Hypothesis: The missingness of demand_loss_mw does not depend on month.
 Alternative Hypothesis: The missingness of demand_loss_mw does depend on month.
-<iframe src="plots/missingness_by_month.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/https://jyim1203.github.io/power-outages-analysis/plots/missingness_by_month.html" width=800 height=600 frameBorder=0></iframe>
 
 I found an observed test statistic of 0.224, meaning the largest difference in missingness rates of demand_loss_mw between any two months was approximately 24%. This corresponded to a p-value of 0.0974, which means we fail to reject the null hypothesis in favor of the alternative hypothesis. There is not a significant difference in the missingness of demand_loss_mw depending on the month, so certain month values are not more likely to have missing demand_loss_mw than others.
-<iframe src="plots/permutation_test_by_month.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/https://jyim1203.github.io/power-outages-analysis/plots/permutation_test_by_month.html" width=800 height=600 frameBorder=0></iframe>
 
 ---
 
@@ -237,7 +237,7 @@ I performed a permutation test with 5,000 simulations to generate an empirical d
 I got a P-Value of 0.000, so with a standard significance level of 0.05, we reject the null hypothesis in favor of the alternative because the results are statistically significant. On average, the duration of outages caused by severe weather are longer than the durations of outages not caused by severe weather. 
 
 The plot below illustrates our observed difference compared to the empirical distribution of differences under the null generated from the permutation test.
-<iframe src="plots/hypothesis_test.html" width=800 height=600 frameBorder=0></iframe>
+<iframe src="https://jyim1203.github.io/power-outages-analysis/https://jyim1203.github.io/power-outages-analysis/plots/hypothesis_test.html" width=800 height=600 frameBorder=0></iframe>
 
 ---
 
